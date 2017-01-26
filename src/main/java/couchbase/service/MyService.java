@@ -81,7 +81,17 @@ public class MyService {
         userInfoRepository.deleteAll();
     }
 
-    public UserInfo createUserInfo() {
+    public Iterable<UserInfo> createUserInfos() {
+
+        List<UserInfo> userInfos = new ArrayList<>();
+        userInfos.add(createUserInfo1());
+        userInfos.add(createUserInfo2());
+        userInfos.add(createUserInfo3());
+
+        return userInfoRepository.save(userInfos);
+    }
+
+    protected UserInfo createUserInfo1() {
         UserInfo userInfo = new UserInfo();
         userInfo.setFirstname("Tushar");
         userInfo.setMiddlename("Jagdishchandra");
@@ -114,13 +124,73 @@ public class MyService {
         addresses.add(add3);
 
         userInfo.setAddresses(addresses);
+        return userInfo;
+    }
+    protected UserInfo createUserInfo2() {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setFirstname("Miral");
+        userInfo.setMiddlename("Tushar");
+        userInfo.setLastname("Chokshi");
+        userInfo.setAge(25);
+        userInfo.setAdmin(true);
 
-        return userInfoRepository.save(userInfo);
+        Address add1 = new Address();
+        add1.setCity("Redmond");
+        add1.setState("WA");
+        add1.setCountry("USA");
+        add1.setZipCode("98052");
+
+        Address add2 = new Address();
+        add2.setCity("Sacaramento");
+        add2.setState("CA");
+        add2.setCountry("USA");
+        add2.setZipCode("95647");
+
+        Address add3 = new Address();
+        add3.setCity("Vadodara");
+        add3.setState("Gujarat");
+        add3.setCountry("India");
+        add3.setZipCode("35276");
+
+
+        List<Address> addresses = new ArrayList<>();
+        addresses.add(add1);
+        addresses.add(add2);
+        addresses.add(add3);
+
+        userInfo.setAddresses(addresses);
+        return userInfo;
+    }
+    protected UserInfo createUserInfo3() {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setFirstname("Srikant");
+        userInfo.setMiddlename("Tushar");
+        userInfo.setLastname("Chokshi");
+        userInfo.setAge(5);
+        userInfo.setAdmin(false);
+
+        Address add1 = new Address();
+        add1.setCity("Redmond");
+        add1.setState("WA");
+        add1.setCountry("USA");
+        add1.setZipCode("98052");
+
+        Address add2 = new Address();
+        add2.setCity("Sacaramento");
+        add2.setState("CA");
+        add2.setCountry("USA");
+        add2.setZipCode("95647");
+
+        List<Address> addresses = new ArrayList<>();
+        addresses.add(add1);
+        addresses.add(add2);
+
+        userInfo.setAddresses(addresses);
+        return userInfo;
     }
 
-
-    public List<UserInfo> findByLastname() {
-        return userInfoRepository.findByLastname("Chokshi");
+    public List<UserInfo> findByLastname(String lastName) {
+        return userInfoRepository.findByLastname(lastName);
     }
 
     public List<UserInfo> findAllAdmins() {
@@ -137,5 +207,9 @@ public class MyService {
 
     public int countByMiddlename() {
         return userInfoRepository.countByMiddlename();
+    }
+
+    public List<UserInfo> findAllByCustomQuery() {
+        return userInfoRepository.findAllByCustomQuery();
     }
 }

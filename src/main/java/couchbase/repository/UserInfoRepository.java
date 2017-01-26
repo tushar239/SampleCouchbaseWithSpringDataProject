@@ -3,9 +3,10 @@ package couchbase.repository;
 import couchbase.domain.UserInfo;
 import org.springframework.data.couchbase.core.query.N1qlPrimaryIndexed;
 import org.springframework.data.couchbase.core.query.N1qlSecondaryIndexed;
+import org.springframework.data.couchbase.core.query.Query;
 import org.springframework.data.couchbase.core.query.View;
 import org.springframework.data.couchbase.core.query.ViewIndexed;
-import org.springframework.data.couchbase.repository.CouchbaseRepository;
+import org.springframework.data.couchbase.repository.CouchbasePagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,15 +20,18 @@ import java.util.List;
 @ViewIndexed(designDoc="userInfo", viewName = "all") // will create a view like the "all" view, to list all entities in the bucket.
 @N1qlPrimaryIndexed // can be used to ensure a general-purpose PRIMARY INDEX is available in N1QL.
 @N1qlSecondaryIndexed(indexName="userInfo_class") // This will create a GSI index on _class field of the document. _class filed is added by spring-data. It's value is same ase couchbase.domain.UserInfo  (CREATE INDEX `userInfo_class` ON `default`(`_class`) WHERE (`_class` = "couchbase.domain.UserInfo"))
-public interface UserInfoRepository extends CouchbaseRepository<UserInfo, String> {
+public interface UserInfoRepository extends CouchbasePagingAndSortingRepository<UserInfo, String> {
 
-    /**
-     * Additional custom finder method, backed by an auto-generated
-     * N1QL query.
-     */
     //List<UserInfo> findByLastnameAndAgeBetween(String lastName, int minAge, int maxAge);
 
-    // This will query a bucket
+    // This will query entire bucket
+
+    // Internally, it executes below N1QL query:
+    // {
+    //  "statement":"SELECT META(`default`).id AS _ID, META(`default`).cas AS _CAS, `default`.* FROM `default` WHERE `lastname` = \"Chokshi\" AND `_class` = \"couchbase.domain.UserInfo\"",
+    //  "scan_consistency":"not_bounded"
+    // }
+
     List<UserInfo> findByLastname(String lastName);
 
 
@@ -51,6 +55,7 @@ public interface UserInfoRepository extends CouchbaseRepository<UserInfo, String
     // Limitation :
     // At present in spring-data-couchbase, View based query derivation is limited to a few keywords and only works on simple keys (not compound keys like [ age, fname ]).
 
+    // Internally, it creates a View query: ViewQuery(userInfo/allAdmins){params="stale=update_after"}
     @View
     List<UserInfo> findAllAdmins(); // same as find from allAdmins view under design document '_design/userInfo'.
 
@@ -64,13 +69,41 @@ public interface UserInfoRepository extends CouchbaseRepository<UserInfo, String
       }
     }
      */
-
+    // Internally, it creates a View query: ViewQuery(userInfo/middleNames){params="stale=update_after&key=%22Jagdishchandra%22"}
     @View(viewName="middleNames") // default designDocument is same as name of the entity (userInfo). Default value of reduce=false. It means that even if you have a reducer specified in a View, it won't be used.
-    List<UserInfo> findByMiddlenameEquals(String middleName);
+    List<UserInfo> findByMiddlenameEquals(String middleNamesViewKeyEqualsTo);
+
+    // Internally, it creates a View query:  ViewQuery(userInfo/middleNames){params="stale=update_after&inclusive_end=false&startkey=%22Jag%22&endkey=%22Jag%EE%BF%BF%22"}
+    @View(viewName="middleNames", designDocument = "userInfo")
+    List<UserInfo> findByMiddlenameStartingWith(String middleNamesViewKeyStartsWith);
 
     @View(viewName="middleNames", designDocument = "userInfo")
-    List<UserInfo> findByMiddlenameStartingWith(String startsWith);
+    List<UserInfo> findByMiddlenameIn(String[] middleNamesViewKeyIn);
 
+    // you need a reducer '_count' in a view for count*** methods
+    // if you have a reducer '_stats', then it returns a json object. So, you need return type of your count*** method accordingly.
+
+    // Internally, it creates a View Reduced query: ViewQuery(userInfo/middleNames){params="reduce=true&stale=update_after"}
     @View(viewName="middleNames", designDocument = "userInfo"/*, reduce = true*/) // even though default value of reduce=false, for count*** methods, it is set to true by spring-data. It means that it will use '_count' reducer.
     int countByMiddlename();
+
+    // Internally, it creates an N1QL query: {"statement":"select d.*, meta(d).id as _ID, meta(d).cas as _CAS from default as d","scan_consistency":"not_bounded"}
+    @Query("select d.*, meta(d).id as _ID, meta(d).cas as _CAS from default as d")
+    List<UserInfo> findAllByCustomQuery();
+
+    /*
+    Limiting the result size of a query with Top and First
+
+    User findFirstByOrderByLastnameAsc();
+
+    User findTopByOrderByAgeDesc();
+
+    Page<User> queryFirst10ByLastname(String lastname, Pageable pageable);
+
+    Slice<User> findTop3ByLastname(String lastname, Pageable pageable);
+
+    List<User> findFirst10ByLastname(String lastname, Sort sort);
+
+    List<User> findTop10ByLastname(String lastname, Pageable pageable);
+     */
 }

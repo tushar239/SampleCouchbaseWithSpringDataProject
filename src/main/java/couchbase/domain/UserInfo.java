@@ -17,7 +17,7 @@ public class UserInfo {
     private String middlename;
     private int age;
     private List<Address> addresses;
-    private String type = "userinfo";
+    //private String type = "userinfo"; // you don't need it with spring-data-couchbase because it creates a field "_class = couchbase.domain.UserInfo" in the document
 
     private boolean isAdmin;
 
@@ -49,14 +49,6 @@ public class UserInfo {
 
     public void setVersion(long version) {
         this.version = version;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getFirstname() {
@@ -120,9 +112,7 @@ public class UserInfo {
         if (firstname != null ? !firstname.equals(userInfo.firstname) : userInfo.firstname != null) return false;
         if (lastname != null ? !lastname.equals(userInfo.lastname) : userInfo.lastname != null) return false;
         if (middlename != null ? !middlename.equals(userInfo.middlename) : userInfo.middlename != null) return false;
-        if (addresses != null ? !addresses.equals(userInfo.addresses) : userInfo.addresses != null) return false;
-        return type != null ? type.equals(userInfo.type) : userInfo.type == null;
-
+        return addresses != null ? !addresses.equals(userInfo.addresses) : userInfo.addresses != null;
     }
 
     @Override
@@ -132,7 +122,6 @@ public class UserInfo {
         result = 31 * result + (middlename != null ? middlename.hashCode() : 0);
         result = 31 * result + age;
         result = 31 * result + (addresses != null ? addresses.hashCode() : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (isAdmin ? 1 : 0);
         result = 31 * result + (int) (version ^ (version >>> 32));
         return result;
@@ -146,7 +135,6 @@ public class UserInfo {
                 ", middlename='" + middlename + '\'' +
                 ", age=" + age +
                 ", addresses=" + addresses +
-                ", type='" + type + '\'' +
                 ", isAdmin=" + isAdmin +
                 ", version=" + version +
                 '}';
