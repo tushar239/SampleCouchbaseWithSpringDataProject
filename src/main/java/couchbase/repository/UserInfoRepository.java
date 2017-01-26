@@ -3,6 +3,7 @@ package couchbase.repository;
 import couchbase.domain.UserInfo;
 import org.springframework.data.couchbase.core.query.N1qlPrimaryIndexed;
 import org.springframework.data.couchbase.core.query.N1qlSecondaryIndexed;
+import org.springframework.data.couchbase.core.query.View;
 import org.springframework.data.couchbase.core.query.ViewIndexed;
 import org.springframework.data.couchbase.repository.CouchbaseRepository;
 import org.springframework.stereotype.Repository;
@@ -26,6 +27,10 @@ public interface UserInfoRepository extends CouchbaseRepository<UserInfo, String
      */
     //List<UserInfo> findByLastnameAndAgeBetween(String lastName, int minAge, int maxAge);
 
+    // This will query a bucket
     List<UserInfo> findByLastname(String lastName);
 
+
+    @View
+    List<UserInfo> findAllAdmins();
 }

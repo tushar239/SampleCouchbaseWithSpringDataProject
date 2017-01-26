@@ -24,10 +24,18 @@ public class Application {
         }*/
 
 
-        // Make sure that you have created a View called 'all'
+        // deleteAll, findAll etc uses a ViewQuery. It finds all doc ids from a view and then queries a bucket to get all docs.
+        // So, it is mandatory to have a view for these queries.
         // In Development View, you need to create a view 'all' under design doc "_design/dev_userInfo" and publish it to Production View.
         // In Production View, this 'all' view will start appearing under design doc "_design/userInfo"
-        // Certain queries is done against 'all' view by spring-data-couchbase (e.g. deleteAll and findAll etc.)
+        // These queries by default expects a view 'all' under design doc "_design/userInfo"
+        // You can see the code of findAll and deleteAll methods.
+        //function (doc, meta) {
+        //    if(doc._class = 'couchbase.domain.UserInfo') {
+        //        emit(meta.id, null);
+        //    }
+        //}
+        // countAll method needs a Reducer (_count) also for this view.
         MyService myService = applicationContext.getBean(MyService.class);
         {
             myService.deleteAll();

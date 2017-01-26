@@ -18,6 +18,8 @@ public class UserInfo {
     private List<Address> addresses;
     private String type = "userinfo";
 
+    private boolean isAdmin;
+
     /*
     Couchbase Server does not support multi-document transactions or rollback. To implement optimistic locking, Couchbase uses a CAS (compare and swap) approach. When a document is mutated, the CAS value also changes. The CAS is opaque to the client, the only thing you need to know is that it changes when the content or a meta information changes too.
 
@@ -88,6 +90,14 @@ public class UserInfo {
         return addresses;
     }
 
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -96,6 +106,7 @@ public class UserInfo {
         UserInfo userInfo = (UserInfo) o;
 
         if (age != userInfo.age) return false;
+        if (isAdmin != userInfo.isAdmin) return false;
         if (version != userInfo.version) return false;
         if (firstname != null ? !firstname.equals(userInfo.firstname) : userInfo.firstname != null) return false;
         if (lastname != null ? !lastname.equals(userInfo.lastname) : userInfo.lastname != null) return false;
@@ -111,6 +122,7 @@ public class UserInfo {
         result = 31 * result + age;
         result = 31 * result + (addresses != null ? addresses.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (isAdmin ? 1 : 0);
         result = 31 * result + (int) (version ^ (version >>> 32));
         return result;
     }
@@ -123,6 +135,7 @@ public class UserInfo {
                 ", age=" + age +
                 ", addresses=" + addresses +
                 ", type='" + type + '\'' +
+                ", isAdmin=" + isAdmin +
                 ", version=" + version +
                 '}';
     }
