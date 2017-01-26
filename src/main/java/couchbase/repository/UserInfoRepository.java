@@ -89,8 +89,22 @@ public interface UserInfoRepository extends CouchbasePagingAndSortingRepository<
 
     // Internally, it creates an N1QL query: {"statement":"select d.*, meta(d).id as _ID, meta(d).cas as _CAS from default as d","scan_consistency":"not_bounded"}
     // Not sure why, but 'meta(d).id as _ID, meta(d).cas' in select query are mandatory. If you see for other findBy methods also, spring adds these fields internally.
-    @Query("select d.*, meta(d).id as _ID, meta(d).cas as _CAS from default as d")
+    @Query("#{#n1ql.selectEntity} WHERE #{#n1ql.filter}")
+    // is same as
+    //@Query("SELECT d.*, meta(d).id AS _ID, meta(d).cas AS _CAS FROM default AS d WHERE d._class='couchbase.domain.UserInfo'")
+
+    /*
+    #n1ql.selectEntity allows to easily make sure the statement will select all the fields necessary to build the full entity (including document ID and CAS value).
+
+    #n1ql.filter in the WHERE clause adds a criteria matching the entity type with the field that Spring Data uses to store type information.
+
+    #n1ql.bucket will be replaced by the name of the bucket the entity is stored in, escaped in backticks.
+
+    #n1ql.fields will be replaced by the list of fields (eg. for a SELECT clause) necessary to reconstruct the entity.
+    */
+
     List<UserInfo> findAllByCustomQuery();
+
 
     /*
     Limiting the result size of a query with Top and First

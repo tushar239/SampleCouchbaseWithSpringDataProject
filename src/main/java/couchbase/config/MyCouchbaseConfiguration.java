@@ -1,5 +1,7 @@
 package couchbase.config;
 
+import com.couchbase.client.java.env.CouchbaseEnvironment;
+import com.couchbase.client.java.env.DefaultCouchbaseEnvironment;
 import couchbase.repository.UserInfoRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +11,7 @@ import org.springframework.data.couchbase.repository.support.IndexManager;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /*
 In the case where the index creation cost isn’t considered too high and you are not in a production environment, it can be triggered automatically instead, in two steps. You will first need to annotate the repositories you want managed with the relevant annotation(s):
@@ -51,6 +54,15 @@ public class MyCouchbaseConfiguration extends AbstractCouchbaseConfiguration {
     @Bean
     public NaiveAuditorAware testAuditorAware() {
         return new NaiveAuditorAware();
+    }
+
+    // Configuration elements are closer to the Couchbase reality: Environment, Cluster, Bucket (potentially allowing you to create CouchbaseTemplates that each connect to a different bucket, or even cluster!)
+    @Override
+    protected CouchbaseEnvironment getEnvironment() {
+        return DefaultCouchbaseEnvironment.builder()
+                .connectTimeout(TimeUnit.SECONDS.toMillis(10))
+                .computationPoolSize(6)
+                .build();
     }
 }
 
