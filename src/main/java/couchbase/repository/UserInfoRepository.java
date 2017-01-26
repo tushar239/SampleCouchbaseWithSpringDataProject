@@ -88,6 +88,7 @@ public interface UserInfoRepository extends CouchbasePagingAndSortingRepository<
     int countByMiddlename();
 
     // Internally, it creates an N1QL query: {"statement":"select d.*, meta(d).id as _ID, meta(d).cas as _CAS from default as d","scan_consistency":"not_bounded"}
+    // Not sure why, but 'meta(d).id as _ID, meta(d).cas' in select query are mandatory. If you see for other findBy methods also, spring adds these fields internally.
     @Query("select d.*, meta(d).id as _ID, meta(d).cas as _CAS from default as d")
     List<UserInfo> findAllByCustomQuery();
 
