@@ -14,6 +14,7 @@ public class UserInfo {
     @Id
     private String firstname;
     private String lastname;
+    private String middlename;
     private int age;
     private List<Address> addresses;
     private String type = "userinfo";
@@ -74,6 +75,14 @@ public class UserInfo {
         return lastname;
     }
 
+    public String getMiddlename() {
+        return middlename;
+    }
+
+    public void setMiddlename(String middlename) {
+        this.middlename = middlename;
+    }
+
     public void setAge(int age) {
         this.age = age;
     }
@@ -110,6 +119,7 @@ public class UserInfo {
         if (version != userInfo.version) return false;
         if (firstname != null ? !firstname.equals(userInfo.firstname) : userInfo.firstname != null) return false;
         if (lastname != null ? !lastname.equals(userInfo.lastname) : userInfo.lastname != null) return false;
+        if (middlename != null ? !middlename.equals(userInfo.middlename) : userInfo.middlename != null) return false;
         if (addresses != null ? !addresses.equals(userInfo.addresses) : userInfo.addresses != null) return false;
         return type != null ? type.equals(userInfo.type) : userInfo.type == null;
 
@@ -119,6 +129,7 @@ public class UserInfo {
     public int hashCode() {
         int result = firstname != null ? firstname.hashCode() : 0;
         result = 31 * result + (lastname != null ? lastname.hashCode() : 0);
+        result = 31 * result + (middlename != null ? middlename.hashCode() : 0);
         result = 31 * result + age;
         result = 31 * result + (addresses != null ? addresses.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
@@ -132,6 +143,7 @@ public class UserInfo {
         return "UserInfo{" +
                 "firstname='" + firstname + '\'' +
                 ", lastname='" + lastname + '\'' +
+                ", middlename='" + middlename + '\'' +
                 ", age=" + age +
                 ", addresses=" + addresses +
                 ", type='" + type + '\'' +

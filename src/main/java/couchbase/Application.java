@@ -23,35 +23,43 @@ public class Application {
 
         }*/
 
-
-        // deleteAll, findAll etc uses a ViewQuery. It finds all doc ids from a view and then queries a bucket to get all docs.
-        // So, it is mandatory to have a view for these queries.
-        // In Development View, you need to create a view 'all' under design doc "_design/dev_userInfo" and publish it to Production View.
-        // In Production View, this 'all' view will start appearing under design doc "_design/userInfo"
-        // These queries by default expects a view 'all' under design doc "_design/userInfo"
-        // You can see the code of findAll and deleteAll methods.
-        //function (doc, meta) {
-        //    if(doc._class = 'couchbase.domain.UserInfo') {
-        //        emit(meta.id, null);
-        //    }
-        //}
-        // countAll method needs a Reducer (_count) also for this view.
         MyService myService = applicationContext.getBean(MyService.class);
         {
-            myService.deleteAll();
+            myService.deleteAllUserInfos();
+            System.out.println("All UserInfos deleted");
         }
 
         {
-            UserInfo userInfo = myService.create();
-            System.out.println(userInfo);
+            UserInfo userInfo = myService.createUserInfo();
+            System.out.println("Created UserInfo: "+userInfo);
         }
         {
             List<UserInfo> userInfos = myService.findAll();
-            System.out.println(userInfos);
+            System.out.println("findAll: "+userInfos);
         }
         {
             List<UserInfo> userInfos = myService.findByLastname();
-            System.out.println(userInfos); // [UserInfo{type='userinfo', version=315093947187200, firstname='Tushar', lastname='Chokshi', age=32, addresses=[Address{city='Redmond', state='WA', country='USA', zipCode='98052'}, Address{city='Sacaramento', state='CA', country='USA', zipCode='95647'}, Address{city='Vadodara', state='Gujarat', country='India', zipCode='35276'}]}]
+            System.out.println("findByLastname: "+userInfos); // [UserInfo{type='userinfo', version=315093947187200, firstname='Tushar', lastname='Chokshi', age=32, addresses=[Address{city='Redmond', state='WA', country='USA', zipCode='98052'}, Address{city='Sacaramento', state='CA', country='USA', zipCode='95647'}, Address{city='Vadodara', state='Gujarat', country='India', zipCode='35276'}]}]
+        }
+        {
+            List<UserInfo> allAdmins = myService.findAllAdmins();
+            System.out.println("findAllAdmins: "+allAdmins);
+        }
+
+        {
+            List<UserInfo> userInfos = myService.findByMiddlenameEquals("Jagdishchandra");
+            System.out.println("findByMiddlenameEquals: "+ userInfos);
+        }
+
+        {
+            List<UserInfo> userInfos = myService.findByMiddlenameStartingWith("Jag");
+            System.out.println("findByMiddlenameStartingWith: " + userInfos);
+            System.out.println(userInfos);
+        }
+
+        {
+            int count = myService.countByMiddlename();
+            System.out.println("countByMiddlename: " + count);
         }
     }
 
