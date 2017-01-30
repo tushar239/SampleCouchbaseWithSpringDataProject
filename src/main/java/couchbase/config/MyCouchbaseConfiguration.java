@@ -29,6 +29,8 @@ Secondly, you’ll need to opt-in to this feature by customizing the indexManage
 @EnableCouchbaseRepositories(basePackageClasses = {UserInfoRepository.class})
 public class MyCouchbaseConfiguration extends AbstractCouchbaseConfiguration {
 
+
+    // Using these information like hosts, bucketName and password, couchbaseCluster, couchbaseClient, couchbaseTemplate etc are created in AbstractCouchbaseConfiguration.
     @Override
     protected List<String> getBootstrapHosts() {
         return Arrays.asList("localhost");

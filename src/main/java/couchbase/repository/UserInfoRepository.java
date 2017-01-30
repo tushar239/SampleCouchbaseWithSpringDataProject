@@ -12,8 +12,30 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * @author Tushar Chokshi @ 1/25/17.
+ * There are Different types of Base Repositories that you can use
+ *
+ * Interfaces
+ * CRUDRepository or CouchbaseRepository
+ * PagingAndSortingRepository or CouchbasePagingAndSortingRepository
+ *
+ * Concrete Class
+ * SimpleCouchbaseRepository or N1qlCouchbaseRepository
+ *
+ * Instead of above mentioned Spring Data Interfaces, you can use one of these concrete classes also.
+ * By extending one of this concrete class, you can override existing methods from the Spring Data interfaces and provide your own implementation.
+ * As they are concrete classes, you need to provide your own implementation for methods, you cannot just add 'findByLastname' to let spring-data interpret it and prepare a query for you.
+ *
+ * You can see an example in N1qlCouchbaseRepository that extends SimpleCouchbaseRepository.
+ * SimpleCouchbaseRepository and interfaces use ViewQuery in findAll method to get document ids from a view 'all' and then querying bucket with those document ids.
+ * Whereas, N1qlCouchbaseRepository overrides findAll to use N1qlQuery to find documents directly from a bucket.
+ *
+ * You can read about these concrete classes under
+ * http://docs.spring.io/spring-data/couchbase/docs/current/reference/html/#_couchbase_specifics_about_changing_the_base_class
+ *
  */
+
+
+
 @Repository
 
 // Use these annotations only for dev purpose
