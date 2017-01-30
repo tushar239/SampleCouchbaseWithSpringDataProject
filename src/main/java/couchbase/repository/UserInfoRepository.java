@@ -29,7 +29,7 @@ import java.util.List;
  * SimpleCouchbaseRepository and interfaces use ViewQuery in findAll method to get document ids from a view 'all' and then querying bucket with those document ids.
  * Whereas, N1qlCouchbaseRepository overrides findAll to use N1qlQuery to find documents directly from a bucket.
  *
- * You can read about these concrete classes under
+ * You can read about how to use these concrete classes under
  * http://docs.spring.io/spring-data/couchbase/docs/current/reference/html/#_couchbase_specifics_about_changing_the_base_class
  *
  */
