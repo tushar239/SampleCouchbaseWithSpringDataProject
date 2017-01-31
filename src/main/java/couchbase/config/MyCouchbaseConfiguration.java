@@ -76,6 +76,7 @@ public class MyCouchbaseConfiguration extends AbstractCouchbaseConfiguration {
     // Consistency Setting with View Query
     // https://developer.couchbase.com/documentation/server/current/indexes/mapreduce-view-consistency.html
 
+    // Spring-Data allows us to set both Bucket and View level consistencies together
     // http://docs.spring.io/spring-data/couchbase/docs/current/api/org/springframework/data/couchbase/core/query/Consistency.html
     // http://docs.spring.io/spring-data/couchbase/docs/current/reference/html/#couchbase.repository.consistency
 
