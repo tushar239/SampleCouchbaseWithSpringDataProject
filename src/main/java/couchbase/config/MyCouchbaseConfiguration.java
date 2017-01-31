@@ -66,5 +66,43 @@ public class MyCouchbaseConfiguration extends AbstractCouchbaseConfiguration {
                 .computationPoolSize(6)
                 .build();
     }
+
+
+    // Setting Consistency in spring-data
+    // Unlike to other NoSql DBs, in couchbase, write consistency is set during read time
+
+    // Consistency Setting with Bucket Query(N1QL Query)
+    // https://developer.couchbase.com/documentation/server/current/architecture/querying-data-with-n1ql.html
+    // Consistency Setting with View Query
+    // https://developer.couchbase.com/documentation/server/current/indexes/mapreduce-view-consistency.html
+
+    // http://docs.spring.io/spring-data/couchbase/docs/current/api/org/springframework/data/couchbase/core/query/Consistency.html
+    // http://docs.spring.io/spring-data/couchbase/docs/current/reference/html/#couchbase.repository.consistency
+
+    // Working with multiple buckets in spring-data
+    // http://docs.spring.io/spring-data/couchbase/docs/current/reference/html/#couchbase.repository.multibucket
+
+    /*@Bean
+    public Bucket userBucket() {
+        return couchbaseCluster().openBucket("users", "");
+    }
+
+    @Bean
+    public CouchbaseTemplate userTemplate() {
+        CouchbaseTemplate template = new CouchbaseTemplate(
+                couchbaseClusterInfo(), //reuse the default bean
+                userBucket(), //the bucket is non-default
+                mappingCouchbaseConverter(), translationService() //default beans here as well
+        );
+        template.setDefaultConsistency(getDefaultConsistency()); // setting consistency level
+        return template;
+    }
+
+    //... then finally make sure all repositories of Users will use it
+    @Override
+    public void configureRepositoryOperationsMapping(RepositoryOperationsMapping baseMapping) {
+        baseMapping //this is already using couchbaseTemplate as default
+                .mapEntity(User.class, userTemplate()); //every repository dealing with User will be backed by userTemplate()
+    }*/
 }
 
